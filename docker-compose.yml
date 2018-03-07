@@ -19,7 +19,7 @@ services:
     volumes:
      - ./db/scheme/:/docker-entrypoint-initdb.d
      - ./db/conf/:/etc/mysql/conf.d
-     - ../docker-data/mariadb:/var/lib/mysql
+     - mysql:/var/lib/mysql
     environment:
      - MYSQL_ROOT_PASSWORD=sup3r_p4sswd
      - MYSQL_DATABASE=mastermind
@@ -31,3 +31,7 @@ services:
       
 networks:
   internal:
+  
+volumes:
+  mysql:
+    driver: local

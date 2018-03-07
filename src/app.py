@@ -5,13 +5,14 @@ import asyncio
 import logging
 import os
 import ujson
+import traceback
 
 from quart import Quart, request
 
 # App modules
 from db import create_game, get_game_code, insert_game_guess, get_game_history
 from utils import make_json_response, get_sha
-from mastermind import play_guess, get_random_code
+from mastermind import play_guess, get_random_code, validate_guess
 
 # Quart config
 app = Quart(__name__)
@@ -56,8 +57,15 @@ async def game_play():
     if code is None:
         return make_json_response(code=1, msg='game_id not valid')
 
-    result = await play_guess(code, guess)
-    logger.debug("Game: %s, Guess: %s, Result: %s" % (game_id, guess, result))
+    if not validate_guess(code, guess):
+        return make_json_response(code=1, msg='guess not valid')
+
+    try:
+        result = await play_guess(code, guess)
+        logger.debug("Game: %s, Guess: %s, Result: %s" % (game_id, guess, result))
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        return make_json_response(code=1, msg='guess not valid')
     
     await insert_game_guess(game_id, guess, result)
     

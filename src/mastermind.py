@@ -39,3 +39,14 @@ def get_random_code():
     """
     """
     return random.sample(COLORS, CODE_LENGTH)
+
+
+def validate_guess(code, guess):
+    """
+    """
+    if len(guess) != len(code):
+        return False
+    elif not isinstance(guess, list):
+        return False
+    else:
+        return True

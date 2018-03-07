@@ -32,40 +32,24 @@ loop.run_until_complete(init_mysql())
 
 # MySQL Decorators
 # ================
-def mysql_connect(*args, **kwargs):
-    # default `mysql_connect` paramaters
-    params = {'use_dict': False, 'database': DB_NAME}
+def mysql_connect(f):
+    async def wrapper(*args, **kwargs):
+        async with pool.acquire() as conn:
+            await conn.select_db(DB_NAME)
+            async with conn.cursor() as cursor:
+                args = (cursor,) + args
+                val = await f(*args, **kwargs)
+                await conn.commit()
+                return val
 
-    def real_decorator(f):
-        async def wrapper(*args, **kwargs):
-            async with pool.acquire() as conn:
-                await conn.select_db(params['database'])
-                cur_type = aiomysql.DictCursor if params['use_dict'] else aiomysql.Cursor
-                async with conn.cursor(cursor=cur_type) as cursor:
-                    args = (cursor,) + args
-                    val = await f(*args, **kwargs)
-                    await conn.commit()
-                    return val
-
-        wrapper.__name__ = f.__name__
-        return wrapper
-
-    # Decorator with optional arguments:
-    # (https://stackoverflow.com/a/3931903)
-    if len(args) == 1 and callable(args[0]):
-        # No arguments, this is the decorator
-        # Set default values for the arguments
-        return real_decorator(args[0])
-    else:
-        for k, v in kwargs.items():
-            params[k] = v
-        return real_decorator
+    wrapper.__name__ = f.__name__
+    return wrapper
 
 
 
 # DB OPERATIONS
 # =============
-@mysql_connect()
+@mysql_connect
 async def create_game(cursor, game_id, code):
     """
     """
@@ -75,7 +59,7 @@ async def create_game(cursor, game_id, code):
 
 
 @cached(ttl=300, cache=RedisCache, serializer=PickleSerializer(), port=6379, endpoint='redis')
-@mysql_connect(use_dict=True)
+@mysql_connect
 async def get_game_code(cursor, game_id):
     """
     """
@@ -83,10 +67,10 @@ async def get_game_code(cursor, game_id):
                          (game_id,))
 
     result = await cursor.fetchone()
-    return result if result is None else result['code'].split('&')
+    return result if result is None else result[0].split('&')
 
 
-@mysql_connect()
+@mysql_connect
 async def insert_game_guess(cursor, game_id, guess, result):
     """
     """
@@ -95,7 +79,7 @@ async def insert_game_guess(cursor, game_id, guess, result):
     return cursor.rowcount > 0
 
 
-@mysql_connect()
+@mysql_connect
 async def get_game_history(cursor, game_id):
     """
     """
