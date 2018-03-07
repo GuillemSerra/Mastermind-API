@@ -52,6 +52,7 @@ async def game_play():
     guess = params.get('guess')
     
     code = await get_game_code(game_id)
+    logger.debug("Code for %s: %s" % (game_id, code))
     if code is None:
         return make_json_response(code=1, msg='game_id not valid')
 
