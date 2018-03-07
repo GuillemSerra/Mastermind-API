@@ -1,5 +1,5 @@
 quart==0.4.1
-aiomysql
-ujson
-aiocache
-aioredis
+aiomysql==0.0.12
+ujson==1.35
+aiocache==0.8.0
+aioredis==1.1.0
