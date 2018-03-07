@@ -6,6 +6,8 @@ services:
     env_file: ./.env
     networks:
       - internal
+    depends_on:
+      - mysql
     ports:
       - 8080:8080
  

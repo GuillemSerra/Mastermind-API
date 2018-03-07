@@ -12,7 +12,7 @@ CODE_LENGTH = 4
 def play_guess(code, guess):
     """
     """
-    return None
+    return {'black_pegs': 2, 'white_pegs': 1}
 
 
 def get_random_code():

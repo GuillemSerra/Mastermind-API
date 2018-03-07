@@ -4,13 +4,14 @@
 import asyncio
 import aiomysql
 import os
+import ujson
 
 
 DB_USER = os.environ["DB_USER"]
 DB_PSWD = os.environ["DB_PSWD"]
 DB_HOST = os.environ["DB_HOST"]
 DB_NAME = os.environ["DB_NAME"]
-
+MAX_HISTORY_GUESSES = 12
 
 # DB POOL INIT
 # ============
@@ -66,19 +67,36 @@ async def create_game(cursor, game_id, code):
     """
     """
     await cursor.execute("INSERT INTO games (id, code) VALUES (%s, %s)",
-                         (game_id, str(code)))
+                         (game_id, '&'.join(code)))
     return cursor.rowcount > 0
 
 
-@mysql_connect()
+@mysql_connect(use_dict=True)
 async def get_game_code(cursor, game_id):
     """
     """
-    return None
+    await cursor.execute("SELECT code FROM games WHERE id = %s",
+                         (game_id,))
+
+    result = await cursor.fetchone()
+    return result if result is None else result['code'].split('&')
+
+
+@mysql_connect()
+async def insert_game_guess(cursor, game_id, guess, result):
+    """
+    """
+    await cursor.execute("INSERT INTO history (game_id, guess, result) VALUES (%s, %s, %s)",
+                         (game_id, '&'.join(guess), ujson.dumps(result)))
+    return cursor.rowcount > 0
 
 
 @mysql_connect()
 async def get_game_history(cursor, game_id):
     """
     """
-    return None
+    await cursor.execute("SELECT guess, result FROM history WHERE game_id = %s ORDER BY id DESC LIMIT %s",
+                         (game_id, MAX_HISTORY_GUESSES))
+
+    return [{'guess': row[0].split('&'), 'result': ujson.loads(row[1])}
+            for row in await cursor.fetchall()]

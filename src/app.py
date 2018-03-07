@@ -8,8 +8,8 @@ import ujson
 
 from quart import Quart, request
 
-# Own modules
-from db import create_game, get_game_code, get_game_history
+# App modules
+from db import create_game, get_game_code, insert_game_guess, get_game_history
 from utils import make_json_response, get_sha
 from mastermind import play_guess, get_random_code
 
@@ -56,7 +56,10 @@ async def game_play():
         return make_json_response(code=1, msg='game_id not valid')
 
     result = play_guess(code, guess)
-    logger.debug("Received input /game/history: %s" % (params))
+    logger.debug("Game: %s, Guess: %s, Result: %s" % (game_id, guess, result))
+    
+    await insert_game_guess(game_id, guess, result)
+    
     return make_json_response(code=0, body=result)
 
 
@@ -70,10 +73,7 @@ async def game_history():
     game_id = params.get('game_id')
 
     history = await get_game_history(game_id)
-    if history is None:
-        return make_json_response(code=1, msg='game_id not valid')
 
-    logger.debug("Received input /game/history: %s" % (params))
     return make_json_response(code=0, body=history)
 
 
