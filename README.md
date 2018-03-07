@@ -84,3 +84,6 @@ Before booting up the application you must run the MySQL container so it can cre
 
 Otherwise you can just boot up the full stack twice and let the other containers fail:
 * `docker-compose up --build`
+
+## Running example
+In the folder examples there's a python script which creates a new game, tries 5 random guesses, and asks for the game historic. To run it the [Requests](http://docs.python-requests.org/en/master/) library must be installed.
