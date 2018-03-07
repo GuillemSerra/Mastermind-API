@@ -38,7 +38,12 @@ async def play_guess(code, guess):
 def get_random_code():
     """
     """
-    return random.sample(COLORS, CODE_LENGTH)
+    code = []
+    
+    for i in range(0, CODE_LENGTH):
+        code += [COLORS[random.randint(0, len(COLORS) - 1)]]
+        
+    return code
 
 
 def validate_guess(code, guess):
