@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
+import random
 
 
 # Mastermind config
-COLORS = ['RED', 'GREEN', 'BLUE', 'YELLOW']
+COLORS = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'PURPLE']
 CODE_LENGTH = 4
 
 
@@ -16,7 +17,6 @@ def play_guess(code, guess):
     white_pegs = 0
     guess_whites = []
     code_whites = []
-    
 
     for i in range(0, len(code)):
         if guess[i] == code[i]:
@@ -35,4 +35,4 @@ def play_guess(code, guess):
 def get_random_code():
     """
     """
-    return ['RED', 'GREEN', 'BLUE', 'YELLOW']
+    return random.sample(COLORS, CODE_LENGTH)
