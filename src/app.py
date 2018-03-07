@@ -19,7 +19,6 @@ app = Quart(__name__)
 app.config['JSON_AS_ASCII'] = False  # jsonify utf-8
 app.secret_key = 'poqtygsbaslkyab7823b,jkfgasduog'
 app.config['CURRENT_SESSION'] = ''
-app.debug = True
 
 
 # Logger config

@@ -14,7 +14,7 @@ url = "http://localhost:8080/game/new"
 payload = {}
 headers = {'content-type': 'application/json'}
 
-print("CREATE NEW GAME: %s" % (url,))
+print("\nCREATE NEW GAME: %s" % (url,))
 
 response = requests.request("GET", url, data=json.dumps(payload), headers=headers)
 
