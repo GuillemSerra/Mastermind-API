@@ -62,21 +62,21 @@ def mysql_connect(*args, **kwargs):
 # DB OPERATIONS
 # =============
 @mysql_connect()
-async def create_game(cursor):
+async def create_game(cursor, game_id, code):
     """
     """
     return None
 
 
 @mysql_connect()
-async def get_game_code(cursor):
+async def get_game_code(cursor, game_id):
     """
     """
     return None
 
 
 @mysql_connect()
-async def get_game_history(cursor):
+async def get_game_history(cursor, game_id):
     """
     """
     return None
