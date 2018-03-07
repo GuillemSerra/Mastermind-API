@@ -56,7 +56,7 @@ async def game_play():
     if code is None:
         return make_json_response(code=1, msg='game_id not valid')
 
-    result = play_guess(code, guess)
+    result = await play_guess(code, guess)
     logger.debug("Game: %s, Guess: %s, Result: %s" % (game_id, guess, result))
     
     await insert_game_guess(game_id, guess, result)

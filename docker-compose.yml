@@ -8,6 +8,7 @@ services:
       - internal
     depends_on:
       - mysql
+      - redis
     ports:
       - 8080:8080
  
@@ -22,6 +23,11 @@ services:
     environment:
      - MYSQL_ROOT_PASSWORD=sup3r_p4sswd
      - MYSQL_DATABASE=mastermind
-
+     
+  redis:
+    image: redis
+    networks:
+      - internal
+      
 networks:
   internal:

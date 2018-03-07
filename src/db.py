@@ -6,6 +6,9 @@ import aiomysql
 import os
 import ujson
 
+from aiocache import cached, RedisCache
+from aiocache.serializers import PickleSerializer
+
 
 DB_USER = os.environ["DB_USER"]
 DB_PSWD = os.environ["DB_PSWD"]
@@ -71,6 +74,7 @@ async def create_game(cursor, game_id, code):
     return cursor.rowcount > 0
 
 
+@cached(ttl=300, cache=RedisCache, serializer=PickleSerializer(), port=6379, endpoint='redis')
 @mysql_connect(use_dict=True)
 async def get_game_code(cursor, game_id):
     """

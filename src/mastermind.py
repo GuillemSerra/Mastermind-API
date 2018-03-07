@@ -4,13 +4,16 @@
 import asyncio
 import random
 
+from aiocache import cached, RedisCache
+from aiocache.serializers import PickleSerializer
+
 
 # Mastermind config
 COLORS = ['RED', 'GREEN', 'BLUE', 'YELLOW', 'PURPLE']
 CODE_LENGTH = 4
 
-
-def play_guess(code, guess):
+@cached(cache=RedisCache, serializer=PickleSerializer(), port=6379, endpoint='redis')
+async def play_guess(code, guess):
     """
     """
     black_pegs = 0
