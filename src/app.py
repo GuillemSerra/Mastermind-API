@@ -33,6 +33,7 @@ async def game_new():
     game_id = get_sha()
     code = get_random_code()
 
+    logger.debug("New game /game/new: %s || %s" % (game_id, code))
     valid_game = await create_game(game_id, code)
     if not valid_game:
         return make_json_response(code=1, msg='Something went wrong')

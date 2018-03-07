@@ -65,7 +65,9 @@ def mysql_connect(*args, **kwargs):
 async def create_game(cursor, game_id, code):
     """
     """
-    return None
+    await cursor.execute("INSERT INTO games (id, code) VALUES (%s, %s)",
+                         (game_id, str(code)))
+    return cursor.rowcount > 0
 
 
 @mysql_connect()

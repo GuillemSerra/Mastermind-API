@@ -5,8 +5,8 @@ import asyncio
 
 
 # Mastermind config
-COLORS = []
-CODE_LENGTH = 0
+COLORS = ['RED', 'GREEN', 'BLUE', 'YELLOW']
+CODE_LENGTH = 4
 
 
 def play_guess(code, guess):
@@ -18,4 +18,4 @@ def play_guess(code, guess):
 def get_random_code():
     """
     """
-    return None
+    return ['RED', 'GREEN', 'BLUE', 'YELLOW']

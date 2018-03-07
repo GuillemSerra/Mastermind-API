@@ -4,5 +4,22 @@ services:
     build:
       context: .
     env_file: ./.env
+    networks:
+      - internal
     ports:
       - 8080:8080
+ 
+  mysql:
+    image: mysql:5.7
+    networks:
+      - internal
+    volumes:
+     - ./db/scheme/:/docker-entrypoint-initdb.d
+     - ./db/conf/:/etc/mysql/conf.d
+     - ../docker-data/mariadb:/var/lib/mysql
+    environment:
+     - MYSQL_ROOT_PASSWORD=sup3r_p4sswd
+     - MYSQL_DATABASE=mastermind
+
+networks:
+  internal:
